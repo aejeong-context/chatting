@@ -35,11 +35,12 @@ public class SocketHandler extends TextWebSocketHandler {
     log.info("message.getPayload is {}", msg);
 
     String room = (String) jsonObject.get("roomId");
+    log.info("request roomId {}",room);
     HashMap<String, Object> temp = new HashMap<String, Object>();
     if (sessionList.size() > 0) {
       for (int i=0;i<sessionList.size();i++) {
         String roomId = (String) sessionList.get(i).get("roomId");
-        if (roomId.equals((roomId))) {
+        if (room.equals((roomId))) {
           temp = sessionList.get(i);
           break;
         }

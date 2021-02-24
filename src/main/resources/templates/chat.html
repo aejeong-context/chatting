@@ -42,17 +42,20 @@
             height: 25px;
         }
 
-        #yourMsg {
-            display: none;
-        }
+
     </style>
 
 </head>
 <script type="text/javascript">
     let ws;
+    $(document).ready(function () {
+
+        wsOpen();
+    });
 
     function wsOpen() {
-        ws = new WebSocket("ws://" + location.host + "/chatting/"+$("#roomId").val());
+        ws = new WebSocket("ws://" + location.host + "/chatting/" + $("#roomId").val());
+
         wsEvt();
     }
 
@@ -85,38 +88,36 @@
                     }
 
                 } else {
-                    console.log("type:"+d.type)
+                    console.log("type:" + d.type)
                     console.warn("unknown type!")
                 }
 
             }
         }
 
-        document.addEventListener("keypress", function (e) {
-            if (e.keyCode === 13) { //enter press
-                send();
-            }
-        });
+
     }
 
-    function chatName() {
-        const userName = $("#userName").val();
-        if (userName == null || userName.trim() == "") {
-            alert("사용자 이름을 입력해주세요.");
-            $("#userName").focus();
-        } else {
-            wsOpen();
-            $("#yourName").hide();
-            $("#yourMsg").show();
-        }
-    }
+    // function chatName() {
+    // const userName = $("#userName").val();
+    // if (userName == null || userName.trim() == "") {
+    //     alert("사용자 이름을 입력해주세요.");
+    //     $("#userName").focus();
+    // } else {
+    // wsOpen();
+    // $("#yourName").hide();
+    // $("#yourMsg").show();
+    // }
+    // }
 
     function send() {
+        // $("#yourMsg").show();
         const option = {
             type: "message",
             sessionId: $("#sessionId").val(),
-            userName: $("#userName").val(),
-            msg: $("#chatting").val()
+            // userName: $("#userName").val(),
+            msg: $("#chatting").val(),
+            roomId: $("#roomId").val()
         };
         ws.send(JSON.stringify(option))
         console.log(JSON.stringify(option));
@@ -132,22 +133,22 @@
     <div id="chating" class="chating">
     </div>
 
-    <div id="yourName">
-        <table class="inputTable">
-            <tr>
-                <th>사용자명</th>
-                <th><input type="text" name="userName" id="userName"></th>
-                <th>
-                    <button onclick="chatName()" id="startBtn">이름 등록</button>
-                </th>
-            </tr>
-        </table>
-    </div>
+    <!--    <div id="yourName">-->
+    <!--        <table class="inputTable">-->
+    <!--            <tr>-->
+    <!--                <th>사용자명</th>-->
+    <!--                <th><input type="text" name="userName" id="userName"></th>-->
+    <!--                <th>-->
+    <!--                    <button onclick="chatName()" id="startBtn">이름 등록</button>-->
+    <!--                </th>-->
+    <!--            </tr>-->
+    <!--        </table>-->
+    <!--    </div>-->
     <div id="yourMsg">
         <table class="inputTable">
             <tr>
                 <th>메시지</th>
-                <th><input id="chatting" placeholder="보내실 메시지를 입력하세요."></th>
+                <th><input type="text" id="chatting" placeholder="보내실 메시지를 입력하세요."></th>
                 <th>
                     <button onclick="send()" id="sendBtn">보내기</button>
                 </th>
