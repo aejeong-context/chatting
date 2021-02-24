@@ -80,6 +80,7 @@
                         $("#chating").append("<p class='me'>나 :" + d.msg + "</p>");
                     } else {
                         console.log("세션아이디가 다른데?")
+                        console.log(d.msg)
                         $("#chating").append("<p class='others'>" + d.userName + " :" + d.msg + "</p>");
                     }
 

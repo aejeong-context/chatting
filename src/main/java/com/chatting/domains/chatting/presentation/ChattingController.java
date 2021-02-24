@@ -69,9 +69,10 @@ for(RoomEntity roomEntity : roomEntityList){
     System.out.println("moveChatting init");
 
     String roomId = (String) params.get("roomId");
-    RoomEntity roomEntity = roomRepository.findByRoomId(roomId);
-    System.out.println("move"+roomEntity.getRoomId());
-    if (roomEntity != null) {
+    System.out.println("roomId : "+roomId);
+//    RoomEntity roomEntity = roomRepository.findByRoomId(roomId);
+//    System.out.println("move"+roomEntity.getRoomId());
+    if (roomId != null) {
       model.addAttribute("roomName", params.get("roomName"));
       model.addAttribute("roomId", params.get("roomId"));
       return "chat";

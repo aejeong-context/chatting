@@ -37,10 +37,10 @@ public class SocketHandler extends TextWebSocketHandler {
     String room = (String) jsonObject.get("roomId");
     HashMap<String, Object> temp = new HashMap<String, Object>();
     if (sessionList.size() > 0) {
-      for (HashMap<String, Object> sessionOne : sessionList) {
-        String roomId = (String) sessionOne.get("roomId");
-        if (roomId.equals((room))) {
-          temp = sessionOne;
+      for (int i=0;i<sessionList.size();i++) {
+        String roomId = (String) sessionList.get(i).get("roomId");
+        if (roomId.equals((roomId))) {
+          temp = sessionList.get(i);
           break;
         }
       }
@@ -84,35 +84,40 @@ public class SocketHandler extends TextWebSocketHandler {
     String url = session.getUri().toString();
     log.info("ulr is {}", url);
     String roomId = url.split("/chatting/")[1];
-    int inx = sessionList.size();
+
+    int idx = sessionList.size();
     boolean flog = false;
     if (sessionList.size() > 0) {
-      inx += 1;
-      for (HashMap<String, Object> sessionOne : sessionList) {
-        String room = (String) sessionOne.get("roomId");
+
+      System.out.println("세션이 있어!");
+      for (int i = 0; i < sessionList.size(); i++) {
+        String room = (String) sessionList.get(i).get("roomId");
         if (room.equals(roomId)) {
+          System.out.println("같은 룸아이디인데!?");
           flog = true;
-          HashMap<String, Object> map = sessionOne;
-          map.put(session.getId(), session);
+          idx = i;
           break;
         }
-        if (flog) {
-          HashMap<String, Object> map = sessionList.get(inx);
-          map.put(session.getId(), session);
-
-        } else {
-          HashMap<String, Object> map = new HashMap<String, Object>();
-          map.put("roomId", roomId);
-          map.put(session.getId(), session);
-          sessionList.add(map);
-        }
-        JSONObject object = new JSONObject();
-        object.put("type", "getId");
-        object.put("sessionId", session.getId());
-        session.sendMessage(new TextMessage(object.toJSONString()));
       }
     }
+
+    if (flog) {
+      HashMap<String, Object> map = sessionList.get(idx);
+      map.put(session.getId(), session);
+
+    } else {
+      HashMap<String, Object> map = new HashMap<String, Object>();
+      map.put("roomId", roomId);
+      map.put(session.getId(), session);
+      sessionList.add(map);
+    }
+    System.out.println("세션 리스트에 추가해줘야겠다 ");
+    JSONObject object = new JSONObject();
+    object.put("type", "getId");
+    object.put("sessionId", session.getId());
+    session.sendMessage(new TextMessage(object.toJSONString()));
   }
+
   // 웹소켓 종료되면 동작
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
