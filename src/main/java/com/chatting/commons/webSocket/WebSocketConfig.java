@@ -1,5 +1,6 @@
-package com.chatting.commons.config;
+package com.chatting.commons.webSocket;
 
+import com.chatting.commons.interceptor.HttpHandshakeInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -15,6 +16,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
   @Override
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-    registry.addHandler(socketHandler, "/chatting/{roomId}");
+    registry
+        .addHandler(socketHandler, "/chatting/{roomId}")
+        .addInterceptors(new HttpHandshakeInterceptor()).setAllowedOrigins("* ");
   }
 }

@@ -1,6 +1,5 @@
-package com.chatting.commons.config;
+package com.chatting.commons.webSocket;
 
-import com.chatting.domains.chatting.presentation.application.dto.MessageRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -35,10 +34,12 @@ public class SocketHandler extends TextWebSocketHandler {
     log.info("message.getPayload is {}", msg);
 
     String room = (String) jsonObject.get("roomId");
-    log.info("request roomId {}",room);
+    log.info("request roomId {}", room);
     HashMap<String, Object> temp = new HashMap<String, Object>();
+
+    log.info("handleTextMessage -현재 세션리스트의 갯수는 ? {}", sessionList.size());
     if (sessionList.size() > 0) {
-      for (int i=0;i<sessionList.size();i++) {
+      for (int i = 0; i < sessionList.size(); i++) {
         String roomId = (String) sessionList.get(i).get("roomId");
         if (room.equals((roomId))) {
           temp = sessionList.get(i);
@@ -82,6 +83,8 @@ public class SocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
     super.afterConnectionEstablished(session);
+    log.info("afterConnectionEstablished -현재 세션리스트의 갯수는 ? {}", sessionList.size());
+
     String url = session.getUri().toString();
     log.info("ulr is {}", url);
     String roomId = url.split("/chatting/")[1];
@@ -89,6 +92,7 @@ public class SocketHandler extends TextWebSocketHandler {
     int idx = sessionList.size();
     boolean flog = false;
     if (sessionList.size() > 0) {
+      log.info("세션이 있다고? -현재 세션리스트의 갯수는 ? {}", sessionList.size());
 
       System.out.println("세션이 있어!");
       for (int i = 0; i < sessionList.size(); i++) {
@@ -104,24 +108,35 @@ public class SocketHandler extends TextWebSocketHandler {
 
     if (flog) {
       HashMap<String, Object> map = sessionList.get(idx);
+      log.info("같은 룸이 라고?? -현재 세션리스트의 갯수는 ? {}", sessionList.size());
+
+      System.out.println("세션 리스트에 추가해줘야겠다 ");
       map.put(session.getId(), session);
 
     } else {
+      log.info("같은 룸이 아니라고?  -현재 세션리스트의 갯수는 ? {}", sessionList.size());
+
       HashMap<String, Object> map = new HashMap<String, Object>();
+      System.out.println("세션 리스트에 추가해줘야겠다 ");
       map.put("roomId", roomId);
       map.put(session.getId(), session);
       sessionList.add(map);
     }
-    System.out.println("세션 리스트에 추가해줘야겠다 ");
+    log.info("세션이 들어오기만한건가?  -현재 세션리스트의 갯수는 ? {}", sessionList.size());
+
     JSONObject object = new JSONObject();
     object.put("type", "getId");
     object.put("sessionId", session.getId());
+    log.info("sessionId 는 몰까용 ? {} ", session.getId());
+
     session.sendMessage(new TextMessage(object.toJSONString()));
   }
 
   // 웹소켓 종료되면 동작
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    log.info("종료될때 세션 갯수는? -현재 세션리스트의 갯수는 ? {}", sessionList.size());
+
     if (sessionList.size() > 0) {
       for (HashMap<String, Object> sessionOne : sessionList) {
         sessionOne.remove(session.getId());
