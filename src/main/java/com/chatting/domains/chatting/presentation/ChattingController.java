@@ -1,6 +1,8 @@
 package com.chatting.domains.chatting.presentation;
 
-import com.chatting.domains.auction.domain.AuctionEntity;
+import com.chatting.domains.chatting.application.MessageFindService;
+import com.chatting.domains.chatting.application.dto.MessageFindResponse;
+import com.chatting.domains.chatting.domain.MessageEntity;
 import com.chatting.domains.chatting.domain.RoomEntity;
 import com.chatting.domains.chatting.domain.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +21,7 @@ import java.util.UUID;
 public class ChattingController {
 
   private final RoomRepository roomRepository;
+  private final MessageFindService messageFindService;
 
   @RequestMapping("/chat")
   public String chat(Model model) {
@@ -58,10 +59,10 @@ public class ChattingController {
     System.out.println("getRoom init");
 
     List<RoomEntity> roomEntityList = roomRepository.findAll();
-for(RoomEntity roomEntity : roomEntityList){
-  System.out.println("호호잇"+roomEntity);
-}
-  return roomEntityList;
+    for (RoomEntity roomEntity : roomEntityList) {
+      System.out.println("호호잇" + roomEntity);
+    }
+    return roomEntityList;
   }
 
   @RequestMapping("/moveChatting")
@@ -69,12 +70,14 @@ for(RoomEntity roomEntity : roomEntityList){
     System.out.println("moveChatting init");
 
     String roomId = (String) params.get("roomId");
-    System.out.println("roomId : "+roomId);
-//    RoomEntity roomEntity = roomRepository.findByRoomId(roomId);
-//    System.out.println("move"+roomEntity.getRoomId());
+    List<MessageFindResponse> messageFindResponseList = messageFindService.findAllMessage(roomId);
+    System.out.println("roomId : " + roomId);
+    //    RoomEntity roomEntity = roomRepository.findByRoomId(roomId);
+    //    System.out.println("move"+roomEntity.getRoomId());
     if (roomId != null) {
       model.addAttribute("roomName", params.get("roomName"));
       model.addAttribute("roomId", params.get("roomId"));
+      model.addAttribute("messageList", messageFindResponseList);
       return "chat";
     } else {
       return "room";

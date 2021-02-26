@@ -48,10 +48,10 @@
 </head>
 <script type="text/javascript">
     let ws;
-    $(document).ready(function () {
-
-        wsOpen();
-    });
+    // $(document).ready(function () {
+    //
+    //     wsOpen();
+    // });
 
     function wsOpen() {
         ws = new WebSocket("ws://" + location.host + "/chatting/" + $("#roomId").val());
@@ -98,24 +98,24 @@
 
     }
 
-    // function chatName() {
-    // const userName = $("#userName").val();
-    // if (userName == null || userName.trim() == "") {
-    //     alert("사용자 이름을 입력해주세요.");
-    //     $("#userName").focus();
-    // } else {
-    // wsOpen();
-    // $("#yourName").hide();
-    // $("#yourMsg").show();
-    // }
-    // }
+    function chatName() {
+        const userName = $("#userName").val();
+        if (userName == null || userName.trim() == "") {
+            alert("사용자 이름을 입력해주세요.");
+            $("#userName").focus();
+        } else {
+            wsOpen();
+            $("#yourName").hide();
+            $("#yourMsg").show();
+        }
+    }
 
     function send() {
-        // $("#yourMsg").show();
+        $("#yourMsg").show();
         const option = {
             type: "message",
             sessionId: $("#sessionId").val(),
-            // userName: $("#userName").val(),
+            userName: $("#userName").val(),
             msg: $("#chatting").val(),
             roomId: $("#roomId").val()
         };
@@ -123,6 +123,7 @@
         console.log(JSON.stringify(option));
 
         $('#chatting').val("");
+
     }
 </script>
 <body>
@@ -131,19 +132,24 @@
     <input type="hidden" id="sessionId" value="">
     <input type="hidden" id="roomId" th:value="${roomId}">
     <div id="chating" class="chating">
+
+        <div th:each="message : ${messageList}">
+            <p th:text="${message.senderName}+':'+${message.message}"></p>
+        </div>
+
     </div>
 
-    <!--    <div id="yourName">-->
-    <!--        <table class="inputTable">-->
-    <!--            <tr>-->
-    <!--                <th>사용자명</th>-->
-    <!--                <th><input type="text" name="userName" id="userName"></th>-->
-    <!--                <th>-->
-    <!--                    <button onclick="chatName()" id="startBtn">이름 등록</button>-->
-    <!--                </th>-->
-    <!--            </tr>-->
-    <!--        </table>-->
-    <!--    </div>-->
+    <div id="yourName">
+        <table class="inputTable">
+            <tr>
+                <th>사용자명</th>
+                <th><input type="text" name="userName" id="userName"></th>
+                <th>
+                    <button onclick="chatName()" id="startBtn">이름 등록</button>
+                </th>
+            </tr>
+        </table>
+    </div>
     <div id="yourMsg">
         <table class="inputTable">
             <tr>

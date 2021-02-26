@@ -1,20 +1,26 @@
-package com.chatting.domains.auction.domain;
+package com.chatting.domains.chatting.domain;
+
 
 import lombok.*;
 
 import javax.persistence.*;
 
+@ToString
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "room")
+@Table(name = "message")
 @Entity
-public class AuctionEntity {
+public class MessageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String senderName;
 
-    private String productName;
+    private String message;
+    private int read;
+    private String roomId;
+
 }

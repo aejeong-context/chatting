@@ -1,6 +1,5 @@
 package com.chatting.domains.chatting.domain;
 
-import com.chatting.domains.auction.domain.AuctionEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,10 +20,6 @@ public class RoomEntity {
     private String roomId;
 
     private String name;
-
-//    @ManyToOne
-//    @JoinColumn(name = "auction_id")
-//    private AuctionEntity auctionEntity;
 
 
 }
