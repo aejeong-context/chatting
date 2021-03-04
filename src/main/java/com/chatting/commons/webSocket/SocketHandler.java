@@ -26,6 +26,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
   // HashMap<String, WebSocketSession> sessionHashMap = new HashMap<>(); // 세션을 담아둘 map
   List<HashMap<String, Object>> sessionList = new ArrayList<>();
+  List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
   Map<String, WebSocketSession> users = new ConcurrentHashMap<String, WebSocketSession>();
 
   private final MessageRegisterService messageRegisterService;
@@ -33,6 +34,19 @@ public class SocketHandler extends TextWebSocketHandler {
   // 메시지를 수신하면 실행
   @Override
   protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+
+//    Map<String, Object> httpSession = session.getAttributes();
+//    log.info(httpSession);
+//    String user = httpSession.get("userName").toString();
+//    log.info("user ~~~~~~~~~{}", user);
+//    users.put(user, session);
+//    if (user.equals("지수")) {
+//      TextMessage textMessage = new TextMessage("나니?");
+//      WebSocketSession webSocketSession = users.get("지수");
+//      log.info("지수 일 떄 {}",users.get("지수"));
+//      webSocketSession.sendMessage(textMessage);
+//    }
+
     String msg = message.getPayload();
     JSONObject jsonObject = jsonToObjectParser(msg);
     log.info("message.getPayload is {}", msg);
@@ -48,6 +62,8 @@ public class SocketHandler extends TextWebSocketHandler {
     if (sessionList.size() > 0) {
       for (int i = 0; i < sessionList.size(); i++) {
         String roomId = (String) sessionList.get(i).get("roomId");
+        log.info("name is ? ? ?{}", userName);
+
         if (room.equals((roomId))) {
           temp = sessionList.get(i);
           break;
@@ -68,7 +84,7 @@ public class SocketHandler extends TextWebSocketHandler {
       }
     }
 
-    messageRegisterService.registerMessage(userName, room, msgContents);
+     messageRegisterService.registerMessage(userName, room, msgContents);
 
     //    for (String key : sessionHashMap.keySet()) {
     //      WebSocketSession wss = sessionHashMap.get(key);
@@ -91,8 +107,27 @@ public class SocketHandler extends TextWebSocketHandler {
   // 웹소켓 연결이 되면 동작
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-    super.afterConnectionEstablished(session);
+
+//    sessions.add(session);
+//    Map<String, Object> httpSession = session.getAttributes();
+//    log.info(httpSession);
+//    String user = httpSession.get("userName").toString();
+//    log.info("user ~~~~~~~~~{}", user);
+//    users.put(user, session);
+    Map<String, Object> httpSession = session.getAttributes();
+    log.info(httpSession);
+    String user = httpSession.get("userName").toString();
+    log.info("user ~~~~~~~~~{}", user);
+    users.put(user, session);
+    if (user.equals("지수")) {
+      TextMessage textMessage = new TextMessage("나니?");
+      WebSocketSession webSocketSession = users.get("지수");
+      log.info("지수 일 떄 {}",users.get("지수"));
+      webSocketSession.sendMessage(textMessage);
+    }
+
     log.info("afterConnectionEstablished -현재 세션리스트의 갯수는 ? {}", sessionList.size());
+    log.info(" session이 뭘 갖고 있는지 궁금하군 {}", session.getAttributes());
 
     String url = session.getUri().toString();
     log.info("ulr is {}", url);

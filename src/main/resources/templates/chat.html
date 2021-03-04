@@ -51,22 +51,30 @@
     // $(document).ready(function () {
     //
     //     wsOpen();
+    //
     // });
 
     function wsOpen() {
-        ws = new WebSocket("ws://" + location.host + "/chatting/" + $("#roomId").val());
+        ws = new WebSocket("ws://" + location.host + "/chatting/" + $("#roomId").val()+"?userName="+$("#userName").val());
+        ws.onmessage=function (data){
+            console.log(data)
+        }
 
         wsEvt();
+
+
     }
 
     function wsEvt() {
         ws.onopen = function (data) {
             //소켓이 열리면 초기화 세팅하기
+
         }
 
         ws.onmessage = function (data) {
             //메세지 받을 때 동작.
             const msg = data.data;
+            console.log(data)
             if (msg != null && msg.trim() != '') {
                 console.log(msg);
                 const d = JSON.parse(msg);
@@ -103,10 +111,13 @@
         if (userName == null || userName.trim() == "") {
             alert("사용자 이름을 입력해주세요.");
             $("#userName").focus();
+
         } else {
             wsOpen();
+
             $("#yourName").hide();
             $("#yourMsg").show();
+
         }
     }
 

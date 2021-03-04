@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
@@ -26,10 +27,14 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
       throws Exception {
     if (request instanceof ServletServerHttpRequest) {
       ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
-      HttpSession session = servletRequest.getServletRequest().getSession();
-      attributes.put("sessionId", session.getId());
-      log.info("============sessionId : {}", session.getId());
+      HttpServletRequest req = servletRequest.getServletRequest();
+      String userName = req.getParameter("userName");
+      log.info("Interceptor user Name is {}", userName);
 
+      attributes.put("userName", userName);
+      //      String userName = (String) req.getSession().getAttribute("userName");
+      //      log.info("Interceptor user Name is {}", userName);
+      //      attributes.put("userName", userName);
     }
     return true;
   }
